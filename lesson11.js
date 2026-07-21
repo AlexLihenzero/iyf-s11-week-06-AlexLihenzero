@@ -441,3 +441,34 @@ Promise.race([fast, slow])
         console.log("Winner:", result);
 
     });
+
+    // ===================================
+// Task 11.4
+// Async / Await
+// ===================================
+
+async function loadUserData() {
+
+    try {
+
+        const user = await getUserDataPromise(1);
+
+        console.log("User:", user);
+
+        const posts = await getUserPostsPromise(user.id);
+
+        console.log("Posts:", posts);
+
+        const comments = await getPostCommentsPromise(posts[0].id);
+
+        console.log("Comments:", comments);
+
+    } catch (error) {
+
+        console.error("Error:", error);
+
+    }
+
+}
+
+loadUserData();
