@@ -7,6 +7,9 @@ const API_KEY = "4bbee2c162c2df54d33a1312dbcac613";
 
 console.log("Weather Dashboard Loaded!");
 
+let currentUnit = "C";
+let currentWeatherData = null;
+
 async function getWeather(city) {
 
     try {
@@ -25,9 +28,9 @@ async function getWeather(city) {
 
         const data = await response.json();
 
-        console.log(data);
+currentWeatherData = data;
 
-        displayWeather(data);
+displayWeather(data);
 
     } catch (error) {
 
@@ -45,17 +48,30 @@ async function getWeather(city) {
 
 function displayWeather(data) {
 
+    const icon = data.weather[0].icon;
+
     weatherCard.innerHTML = `
 
         <h2>${data.name}</h2>
 
-        <p>🌡 Temperature: ${data.main.temp} °C</p>
+        <img 
+            src="https://openweathermap.org/img/wn/${icon}@4x.png"
+            alt="Weather icon"
+        >
 
-        <p>☁ Weather: ${data.weather[0].description}</p>
+        <h3>${convertTemperature(data.main.temp)}</h3>
 
-        <p>💧 Humidity: ${data.main.humidity}%</p>
+        <p>
+            ${data.weather[0].description}
+        </p>
 
-        <p>💨 Wind: ${data.wind.speed} m/s</p>
+        <p>
+            💧 Humidity: ${data.main.humidity}%
+        </p>
+
+        <p>
+            💨 Wind: ${data.wind.speed} m/s
+        </p>
 
     `;
 
@@ -75,6 +91,8 @@ const errorDiv = document.getElementById("error");
 
 const weatherCard = document.getElementById("weather-card");
 
+const unitBtn = document.getElementById("unit-btn");
+
 // Test the elements
 
 console.log(cityInput);
@@ -92,5 +110,61 @@ searchBtn.addEventListener("click", function () {
     }
 
     getWeather(city);
+
+});
+
+// ===================================
+// Search using Enter key
+// ===================================
+
+cityInput.addEventListener("keypress", function(event) {
+
+    if (event.key === "Enter") {
+
+        const city = cityInput.value.trim();
+
+        if (city === "") {
+            return;
+        }
+
+        getWeather(city);
+
+    }
+
+});
+
+function convertTemperature(tempC) {
+
+    if (currentUnit === "C") {
+
+        return `${tempC} °C`;
+
+    } else {
+
+        const fahrenheit = (tempC * 9/5) + 32;
+
+        return `${fahrenheit.toFixed(1)} °F`;
+
+    }
+
+}
+
+unitBtn.addEventListener("click", function() {
+
+    if (!currentWeatherData) {
+        return;
+    }
+
+    if (currentUnit === "C") {
+
+        currentUnit = "F";
+
+    } else {
+
+        currentUnit = "C";
+
+    }
+
+    displayWeather(currentWeatherData);
 
 });
