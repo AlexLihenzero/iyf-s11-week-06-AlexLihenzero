@@ -2,7 +2,11 @@
 const loading = document.getElementById("loading");
 const errorDiv = document.getElementById("error");
 const container = document.getElementById("users-container");
+const sortAZ = document.getElementById("sort-az");
 
+const sortZA = document.getElementById("sort-za");
+
+const cityFilter = document.getElementById("city-filter");
 // ===================================
 // Load Users
 // ===================================
@@ -47,6 +51,26 @@ function displayUsers(users) {
 
 }
 
+function createCityOptions(users) {
+
+    const cities = users.map(user => user.address.city);
+
+    const uniqueCities = [...new Set(cities)];
+
+    uniqueCities.forEach(city => {
+
+        const option = document.createElement("option");
+
+        option.value = city;
+
+        option.textContent = city;
+
+        cityFilter.appendChild(option);
+
+    });
+
+}
+
 async function loadUsers() {
 
     try {
@@ -65,6 +89,8 @@ async function loadUsers() {
         const users = await response.json();
 
         allUsers = users;
+
+        createCityOptions(users);
 
         loading.classList.add("hidden");
 
@@ -116,6 +142,56 @@ searchInput.addEventListener("input", function(event) {
         );
 
     });
+
+    displayUsers(filteredUsers);
+
+});
+
+sortAZ.addEventListener("click", function() {
+
+    const sortedUsers = [...allUsers].sort(function(a, b) {
+
+        return a.name.localeCompare(b.name);
+
+    });
+
+    displayUsers(sortedUsers);
+
+});
+
+
+sortZA.addEventListener("click", function() {
+
+    const sortedUsers = [...allUsers].sort(function(a, b) {
+
+        return b.name.localeCompare(a.name);
+
+    });
+
+    displayUsers(sortedUsers);
+
+});
+
+cityFilter.addEventListener("change", function(event) {
+
+    const selectedCity = event.target.value;
+
+
+    if (selectedCity === "all") {
+
+        displayUsers(allUsers);
+
+        return;
+
+    }
+
+
+    const filteredUsers = allUsers.filter(function(user) {
+
+        return user.address.city === selectedCity;
+
+    });
+
 
     displayUsers(filteredUsers);
 

@@ -19,10 +19,30 @@
     id="search"
     placeholder="Search by name or email..."
 >
+<div class="sort-buttons">
 
-    <div id="loading">
+    <button id="sort-az">
+        Sort A-Z
+    </button>
+
+    <button id="sort-za">
+        Sort Z-A
+    </button>
+
+</div>
+
+<select id="city-filter">
+
+    <option value="all">
+        All Cities
+    </option>
+
+</select>
+    
+<div id="loading">
         Loading users...
     </div>
+
 
     <div id="error" class="hidden"></div>
 
